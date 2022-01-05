@@ -1,0 +1,16 @@
+- IPv4 :: 10.0.0.0/16
+- 라우팅테이블
+  - 이름
+    - paasta-ap-joy-routing-public
+    - paasta-ap-joy-routing-private
+- 서브넷
+  - public
+    - paasta-ap-joy-public-subnet
+  - private
+    - paasta-ap-joy-private-subnet-1
+    - paasta-ap-joy-private-subnet-2
+    - paasta-ap-joy-private-subnet-3
+    - paasta-ap-joy-private-subnet-4
+    - paasta-ap-joy-private-subnet-5
+    - paasta-ap-joy-private-subnet-6
+  - 
