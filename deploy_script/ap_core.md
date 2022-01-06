@@ -1,6 +1,6 @@
-## AP core 배포 script
+# AP core 배포 script
 
-### 1. common vars clone
+## 1. common vars clone
 ```shell
 cd ~/workspace
 git clone https://github.com/PaaS-TA/common.git
@@ -8,7 +8,7 @@ git clone https://github.com/PaaS-TA/common.git
 
 <br />
 
-### 2. Stemcell
+## 2. Stemcell
 ```shell
 vi ~/workspace/paasta-deployment/bosh/upload-stemcell.sh
 
@@ -18,7 +18,7 @@ source upload-stemcell.sh
 
 <br />
 
-### 3. Runtime Config
+## 3. Runtime Config
 ```shell
 vi ~/workspace/paasta-deployment/bosh/update-runtime-config.sh
 
@@ -31,7 +31,7 @@ bosh -e micro-bosh runtime-config --name=os-conf
 
 <br />
 
-### 4. Cloud Config
+## 4. Cloud Config
 ```shell
 bosh -e micro-bosh update-cloud-config ~/workspace/paasta-deployment/cloud-config/aws-cloud-config.yml
 bosh -e micro-bosh cloud-config 
@@ -39,7 +39,7 @@ bosh -e micro-bosh cloud-config
 
 <br />
 
-### 5. PaaS-TA core
+## 5. PaaS-TA core
 ```shell
 # common_vars 및 vars 수정 전 아래 두 항목 확인 필요
 ## bosh client admin id
@@ -67,7 +67,7 @@ bosh -e micro-bosh vms -d paasta
 
 <br />
 
-### 6. CF
+## 6. CF
 1. CF CLI v7 설치 (PaaS-TA AP 5.1.0 이상)
 ```shell
 wget -q -O - https://packages.cloudfoundry.org/debian/cli.cloudfoundry.org.key | sudo apt-key add -

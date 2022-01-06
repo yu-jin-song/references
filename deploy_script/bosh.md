@@ -1,6 +1,6 @@
-## BOSH 배포 script
+# BOSH 배포 script
 
-### 1. BOSH CLI 설치
+## 1. BOSH CLI 설치
 ```shell
 mkdir -p ~/workspace
 cd ~/workspace
@@ -13,7 +13,7 @@ bosh -v
 
 <br />
 
-### 2. 설치 파일 다운로드
+## 2. 설치 파일 다운로드
 ```shell
 mkdir -p ~/workspace
 cd ~/workspace
@@ -24,7 +24,7 @@ cd ~/workspace/paasta-deployment
 
 <br />
 
-### 3. 설정
+## 3. 설정
 ```shell
 # AWS 환경에 BOSH 설치시 적용하는 변수 설정 파일, 수정 및 확인 필요
 vim ~/workspace/paasta-deployment/bosh/aws-vars.yml
@@ -40,7 +40,7 @@ chmod +x ~/workspace/paasta-deployment/bosh/*.sh
 
 <br />
 
-### 4. BOSH 로그인
+## 4. BOSH 로그인
 4-1. 수동
 ```shell
 cd ~/workspace/paasta-deployment/bosh
@@ -94,7 +94,7 @@ source /home/ubuntu/.env/micro-bosh-login-env
 
 <br />
 
-### 5. CredHub
+## 5. CredHub
 1. CLI 설치
 ```shell
 wget https://github.com/cloudfoundry-incubator/credhub-cli/releases/download/2.9.0/credhub-linux-2.9.0.tgz
@@ -115,7 +115,7 @@ credhub login -s https://10.0.1.6:8844 --skip-tls-validation
 
 <br />
 
-### 6. Jumpbox
+## 6. Jumpbox
 ```shell
 cd ~/workspace/paasta-deployment/bosh
 bosh int aws/creds.yml --path /jumpbox_ssh/private_key > jumpbox.key
