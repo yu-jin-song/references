@@ -1,3 +1,12 @@
+# portal 관련 issue
+## 1. smtp
+- 이메일 계정 접속 > 아래의 url로 이동 > `보안 수준이 낮은 앱 허용: 사용` 설정
+  - url :: https://www.google.com/settings/security/lesssecureapps
+
+<br />
+
+---
+
 # AP portal VM Type 배포 script
 
 ## Prequisite
