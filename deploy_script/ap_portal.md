@@ -86,6 +86,8 @@ cf enable-feature-flag user_org_creation
 vim ~/workspace/portal-deployment/portal-api/vars.yml
 ```
 
+<br />
+
 ### 2. 설치
 ```shell
 # 배포 파일 수정 및 확인
