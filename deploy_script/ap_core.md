@@ -100,5 +100,26 @@ cf set-space-role joy-user joy-org joy-space SpaceDeveloper
 
 4. 샘플앱 테스트
 ```shell
-cf push joy-spring-music ~/workspace/user/joy/sample_app/spring-music-war/spring-music.war
+# 샘플앱 배포
+cf push joy-spring-music -p ~/workspace/user/joy/sample_app/spring-music-war/spring-music.war
+
+# 확인
+## 터미널
+curl -k https://joy-spring-music.52.78.8.142.nip.io
+## 웹브라우저
+https://joy-spring-music.52.78.8.142.nip.io
+```
+
+<br />
+
+### 7. common_vars.yml 수정
+```shell
+# nats password 확인
+credhub get -n /micro-bosh/paasta/nats_password
+
+# nats ip, database ip 확인
+bosh vms
+
+# common_vars 수정(nats password, nats ip, database ip)
+vim ~/workspace/common/common_vars.yml
 ```
