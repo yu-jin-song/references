@@ -1,5 +1,6 @@
-## BOSH
-### BOSH CLI 설치
+## BOSH 배포 script
+
+### 1. BOSH CLI 설치
 ```shell
 mkdir -p ~/workspace
 cd ~/workspace
@@ -10,7 +11,9 @@ sudo mv ./bosh /usr/local/bin/bosh
 bosh -v
 ```
 
-### 설치 파일 다운로드
+<br />
+
+### 2. 설치 파일 다운로드
 ```shell
 mkdir -p ~/workspace
 cd ~/workspace
@@ -19,19 +22,26 @@ git clone https://github.com/PaaS-TA/paasta-deployment.git -b v5.6.6
 cd ~/workspace/paasta-deployment
 ```
 
-### 설정
+<br />
+
+### 3. 설정
 ```shell
-# AWS 환경에 BOSH 설치시 적용하는 변수 설정 파일
+# AWS 환경에 BOSH 설치시 적용하는 변수 설정 파일, 수정 및 확인 필요
 vim ~/workspace/paasta-deployment/bosh/aws-vars.yml
 
-# AWS 환경에 BOSH 설치를 위한 Shell Script 파일
+# AWS 환경에 BOSH 설치를 위한 Shell Script 파일, 확인 필요
 vim ~/workspace/paasta-deployment/bosh/deploy-aws.sh
 
 # 설치
+cd ~/workspace/paasta-deployment/bosh
+chmod +x ~/workspace/paasta-deployment/bosh/*.sh  
 ./deploy-aws.sh
 ```
 
-### BOSH 로그인(수동)
+<br />
+
+### 4. BOSH 로그인
+4-1. 수동
 ```shell
 cd ~/workspace/paasta-deployment/bosh
 
@@ -42,34 +52,7 @@ bosh alias-env micro-bosh -e 10.0.1.6 --ca-cert <(bosh int ./aws/creds.yml --pat
 bosh -e micro-bosh env
 ```
 
-### 4. CredHub
-1. CLI 설치
-```shell
-wget https://github.com/cloudfoundry-incubator/credhub-cli/releases/download/2.9.0/credhub-linux-2.9.0.tgz
-tar -xvf credhub-linux-2.9.0.tgz
-chmod +x credhub
-sudo mv credhub /usr/local/bin/credhub
-credhub --version
-```
-
-2. 로그인
-```shell
-cd ~/workspace/paasta-deployment/bosh
-export CREDHUB_CLIENT=credhub-admin
-export CREDHUB_SECRET=$(bosh int --path /credhub_admin_client_secret aws/creds.yml)
-export CREDHUB_CA_CERT=$(bosh int --path /credhub_tls/ca aws/creds.yml)
-credhub login -s https://10.0.1.6:8844 --skip-tls-validation
-```
-
-### 5. Jumpbox
-```shell
-cd ~/workspace/paasta-deployment/bosh
-bosh int aws/creds.yml --path /jumpbox_ssh/private_key > jumpbox.key
-chmod 600 jumpbox.key
-ssh jumpbox@10.0.1.6 -i jumpbox.key
-```
-
-### 6. BOSH 로그인(스크립트)
+4-2. shell 스크립트
 ```shell
 vi ~/workspace/paasta-deployment/bosh/create-bosh-login.sh
 
@@ -107,6 +90,37 @@ cd ~/workspace/paasta-deployment/bosh
 source create-bosh-login.sh
 
 source /home/ubuntu/.env/micro-bosh-login-env
+```
+
+<br />
+
+### 5. CredHub
+1. CLI 설치
+```shell
+wget https://github.com/cloudfoundry-incubator/credhub-cli/releases/download/2.9.0/credhub-linux-2.9.0.tgz
+tar -xvf credhub-linux-2.9.0.tgz
+chmod +x credhub
+sudo mv credhub /usr/local/bin/credhub
+credhub --version
+```
+
+2. 로그인
+```shell
+cd ~/workspace/paasta-deployment/bosh
+export CREDHUB_CLIENT=credhub-admin
+export CREDHUB_SECRET=$(bosh int --path /credhub_admin_client_secret aws/creds.yml)
+export CREDHUB_CA_CERT=$(bosh int --path /credhub_tls/ca aws/creds.yml)
+credhub login -s https://10.0.1.6:8844 --skip-tls-validation
+```
+
+<br />
+
+### 6. Jumpbox
+```shell
+cd ~/workspace/paasta-deployment/bosh
+bosh int aws/creds.yml --path /jumpbox_ssh/private_key > jumpbox.key
+chmod 600 jumpbox.key
+ssh jumpbox@10.0.1.6 -i jumpbox.key
 ```
 
 
