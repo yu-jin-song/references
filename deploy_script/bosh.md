@@ -27,14 +27,14 @@ cd ~/workspace/paasta-deployment
 ### 3. 설정
 ```shell
 # AWS 환경에 BOSH 설치시 적용하는 변수 설정 파일, 수정 및 확인 필요
-vim ~/workspace/paasta-deployment/bosh/aws-vars.yml
+vim ~/workspace/deployments/paasta-deployment-v5.7.0/bosh/aws-vars.yml
 
 # AWS 환경에 BOSH 설치를 위한 Shell Script 파일, 확인 필요
-vim ~/workspace/paasta-deployment/bosh/deploy-aws.sh
+vim ~/workspace/deployments/paasta-deployment-v5.7.0/bosh/deploy-aws.sh
 
 # 설치
-cd ~/workspace/paasta-deployment/bosh
-chmod +x ~/workspace/paasta-deployment/bosh/*.sh  
+cd ~/workspace/deployments/paasta-deployment-v5.7.0/bosh
+chmod +x ~/workspace/deployments/paasta-deployment-v5.7.0/bosh/*.sh  
 ./deploy-aws.sh
 ```
 
@@ -54,13 +54,13 @@ bosh -e micro-bosh env
 
 4-2. shell 스크립트
 ```shell
-vim ~/workspace/paasta-deployment/bosh/create-bosh-login.sh
+vim ~/workspace/deployments/paasta-deployment-v5.7.0/bosh/create-bosh-login.sh
 
 -----
 
 #!/bin/bash
 
-BOSH_DEPLOYMENT_PATH="~/workspace/paasta-deployment/bosh" 	# (e.g. ~/workspace/paasta-deployment/bosh)
+BOSH_DEPLOYMENT_PATH="~/workspace/deployments/paasta-deployment-v5.7.0/bosh" 	# (e.g. ~/workspace/paasta-deployment/bosh)
 CURRENT_IAAS="aws"				# (e.g. aws/azure/gcp/openstack/vsphere/bosh-lite)
 BOSH_IP="10.0.1.6"				# (e.g. 10.0.1.6)
 BOSH_CLIENT_ADMIN_ID="admin"			# (e.g. admin)
@@ -86,7 +86,7 @@ credhub login -s https://'${BOSH_IP}':8844 --skip-tls-validation --client-name=c
 
 -------------
 
-cd ~/workspace/paasta-deployment/bosh
+cd ~/workspace/deployments/paasta-deployment-v5.7.0/bosh
 source create-bosh-login.sh
 
 source /home/ubuntu/.env/micro-bosh-login-env
@@ -117,7 +117,7 @@ credhub login -s https://10.0.1.6:8844 --skip-tls-validation
 
 ### 6. Jumpbox
 ```shell
-cd ~/workspace/paasta-deployment/bosh
+cd ~/workspace/deployments/paasta-deployment-v5.7.0/bosh
 bosh int aws/creds.yml --path /jumpbox_ssh/private_key > jumpbox.key
 chmod 600 jumpbox.key
 ssh jumpbox@10.0.1.6 -i jumpbox.key
