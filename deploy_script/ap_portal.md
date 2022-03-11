@@ -32,10 +32,10 @@ git clone https://github.com/PaaS-TA/portal-deployment.git -b v5.2.3
 ### 1. 설정
 ```shell
 # common_vars 내 ui 관련 항목 확인 및 수정
-vim ~/workspace/common/common_vars.yml
+vim ~/workspace/deployments/common/common_vars.yml
 
 # portal-ui 설정 파일 수정
-vim ~/workspace/portal-deployment/portal-ui/vars.yml
+vim ~/workspace/deployments/portal-deployment/portal-ui/vars.yml
 ```
 
 <br />
@@ -43,10 +43,10 @@ vim ~/workspace/portal-deployment/portal-ui/vars.yml
 ### 2. 배포
 ```shell
 # deploy shell 파일 수정 및 확인
-vim ~/workspace/portal-deployment/portal-ui/deploy.sh
+vim ~/workspace/deployments/portal-deployment/portal-ui/deploy.sh
 
 # 배포
-cd ~/workspace/portal-deployment/portal-ui   
+cd ~/workspace/deployments/portal-deployment/portal-ui   
 sh ./deploy.sh  
 
 # 배포 완료 후 vm 확인
@@ -64,7 +64,7 @@ cf create-space system -o portal
 cf target -o portal -s system
 
 # Portal SSH 다운로드 및 배포
-cd ~/workspace/portal-deployment
+cd ~/workspace/deployments/portal-deployment
 wget --content-disposition https://nextcloud.paas-ta.org/index.php/s/awPjYDYCMiHY7yF/download
 unzip portal-ssh.zip
 cd portal-ssh
@@ -83,7 +83,7 @@ cf enable-feature-flag user_org_creation
 ## API
 ### 1. 설정
 ```shell
-vim ~/workspace/portal-deployment/portal-api/vars.yml
+vim ~/workspace/deployments/portal-deployment/portal-api/vars.yml
 ```
 
 <br />
@@ -91,9 +91,9 @@ vim ~/workspace/portal-deployment/portal-api/vars.yml
 ### 2. 설치
 ```shell
 # 배포 파일 수정 및 확인
-vim ~/workspace/portal-deployment/portal-api/deploy.sh
+vim ~/workspace/deployments/portal-deployment/portal-api/deploy.sh
 
-cd ~/workspace/portal-deployment/portal-api 
+cd ~/workspace/deployments/portal-deployment/portal-api 
 sh ./deploy.sh 
 
 # 설치 완료 후 vm 확인
@@ -106,8 +106,5 @@ bosh -e micro-bosh -d portal-api vms
 
 ## 공통
 - url
-  - user :: http://portal-web-user.52.78.153.22.nip.io
-  - admin :: http://portal-web-admin.52.78.153.22.nip.io
-- 계정 정보
-  - id :: admin
-  - pw :: admin
+  - user :: http://portal-web-user.xx.xx.xx.xx.nip.io
+  - admin :: http://portal-web-admin.xx.xx.xx.xx.nip.io
