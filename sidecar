@@ -116,3 +116,11 @@ spec:
       enabled: true
 
 kubectl apply -f istio-profile.yml
+
+
+=========================================================================================================================
+=========================================================================================================================
+
+
+kapp: Error: waiting on reconcile builder/cf-default-builder (kpack.io/v1alpha1) namespace: cf-workloads-staging:
+  Finished unsuccessfully (Encountered failure condition Ready == False:  (message: GET https://auth.docker.io/token?scope=repository%3Apaketobuildpacks%2Fbuild%3Apull&service=registry.docker.io: unexpected status code 401 Unauthorized: {"details":"incorrect username or password"}
