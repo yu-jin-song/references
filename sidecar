@@ -1,0 +1,118 @@
+[‎standalone/single_control_plane/deploy-cp-cluster.sh]
+source cp-cluster-vars.sh
+source package-install.sh
+source cp-cluster-setting.sh
+source cp-cluster-install.sh
+
+[‎standalone/single_control_plane/cp-cluster-setting.sh]
+cp roles/kubernetes-apps/metrics_server/defaults/main.yml.ori roles/kubernetes-apps/metrics_server/defaults/main.yml
+CONFIG_FILE=inventory/mycluster/hosts.yaml python3 contrib/inventory_builder/inventory.py ${IPS[@]}
+
+=========================================================================================================================
+
+[standalone/single_control_plane/roles/download/defaults/main.yml]
+/* 다음 부분 수정 : v0.6.1 -> v0.6.4 */
+...
+
+metrics_server_version: "v0.6.4"
+
+=========================================================================================================================
+
+[standalone/single_control_plane/cluster.yml]
+/* 다음 부분 주석처리 */
+...
+
+- hosts: kube_control_plane
+  gather_facts: False
+  any_errors_fatal: "{{ any_errors_fatal | default(true) }}"
+  environment: "{{ proxy_disable_env }}"
+  roles:
+    - { role: kubespray-defaults }
+    - { role: paasta-cp/istio }
+
+...
+
+- hosts: kube_control_plane
+  gather_facts: False
+  any_errors_fatal: "{{ any_errors_fatal | default(true) }}"
+  environment: "{{ proxy_disable_env }}"
+  roles:
+    - { role: kubespray-defaults }
+    - { role: paasta-cp/kubeflow }
+
+
+
+=========================================================================================================================
+=========================================================================================================================
+## istio oerator 설치(sidecar-deployment 내에 위치 필요)
+1. istioctl 설치
+curl -L https://git.io/getLatestIstio | ISTIO_VERSION=1.12.6 sh -
+cd istio-1.12.6
+sudo cp bin/istioctl /usr/local/bin/istioctl
+
+2. istio operator 설치
+git clone https://github.com/istio/istio.git -b 1.12.6 istio-operator
+cd istio-operator
+/* namespace 생성 */
+[istio-namespace.yml]
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    cloudfoundry.org/istio_version: 1.12.6
+    cf-for-k8s.cloudfoundry.org/istio-system-ns: ""
+  name: istio-system
+
+kubectl apply -f istio-namespace.yml
+
+/* operator 설치 */
+[istio-operator-values.yml]
+revision: "1-12-6"
+operatorNamespace: istio-operator
+watchedNamespaces: istio-system
+operator:
+  resources:
+    limits:
+      cpu: 4
+      memory: 4Gi
+    requests:
+      cpu: 2
+      memory: 2G
+
+[istio-operator/manifests/charts/istio-operator/templates/deployment.yaml]
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{.Release.Namespace}}
+  name: istio-operator{{- if not (eq .Values.revision "") }}-{{ .Values.revision }}{{- end }} // 이 부분 아래에 다음 내용 추가
+  labels:
+    cloudfoundry.org/istio_version: 1.12.6
+...
+
+/* file 수정없이도 적용되는지 확인 필요 */
+[istio-operator/manifests/charts/istio-operator/files/gen-operator.yaml]
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: istio-operator
+  name: istio-operator	// 이 부분 아래에 다음 내용 추가
+  labels:
+    cloudfoundry.org/istio_version: 1.12.6
+...
+
+helm upgrade -i istio-operator ./istio-operator/manifests/charts/istio-operator -f istio-operator-values.yaml -n istio-system
+
+/* control plane 설치(cni enabled) */
+[istio-profile.yml]
+---
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+metadata:
+  namespace: istio-system
+  name: istio-controlplane
+spec:
+  components:
+    cni:
+      enabled: true
+
+kubectl apply -f istio-profile.yml
