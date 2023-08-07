@@ -121,6 +121,33 @@ kubectl apply -f istio-profile.yml
 =========================================================================================================================
 =========================================================================================================================
 
+[sidecar-deployment/config/istio/add-istio-injection.yml]
+/* 다음 부분 수정 : enabled -> 1-12-6 */
+...
+
+istio-injection: 1-12-6
+
+[sidecar-deployment/config/istio/istio-generated/xxx-generated-istio.yml]
+/* 다음 부분 수정 : false -> true */
+...
+
+      "istio_cni": {
+        "enabled": true
+      },
+
+[sidecar-deployment/config/system-namespace.yml]
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: #@ system_namespace()
+  labels:
+    cf-for-k8s.cloudfoundry.org/cf-system-ns: ""  // 아래에 다음 내용 추가
+    #@ if system_namespace() == "cf-system"
+    pod-security.kubernetes.io/enforce: privileged
+    #@ end
+...
+
+==================================================================================================================
 
 kapp: Error: waiting on reconcile builder/cf-default-builder (kpack.io/v1alpha1) namespace: cf-workloads-staging:
   Finished unsuccessfully (Encountered failure condition Ready == False:  (message: GET https://auth.docker.io/token?scope=repository%3Apaketobuildpacks%2Fbuild%3Apull&service=registry.docker.io: unexpected status code 401 Unauthorized: {"details":"incorrect username or password"}
