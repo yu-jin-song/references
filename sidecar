@@ -142,7 +142,7 @@ metadata:
   name: #@ system_namespace()
   labels:
     cf-for-k8s.cloudfoundry.org/cf-system-ns: ""  // 아래에 다음 내용 추가
-    #@ if system_namespace() == "cf-system"
+    #@ if system_namespace() == "cf-system":
     pod-security.kubernetes.io/enforce: privileged
     #@ end
 ...
