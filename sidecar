@@ -126,3 +126,7 @@ kapp: Error: waiting on reconcile builder/cf-default-builder (kpack.io/v1alpha1)
   Finished unsuccessfully (Encountered failure condition Ready == False:  (message: GET https://auth.docker.io/token?scope=repository%3Apaketobuildpacks%2Fbuild%3Apull&service=registry.docker.io: unexpected status code 401 Unauthorized: {"details":"incorrect username or password"}
 
 manager 2023-08-04T06:13:48.280Z    ERROR    controller-runtime.controller    Reconciler error    {"controller": "periodicsync", "request": "cf-system/cf-api-periodic-route-sync", "error": "error listing routes from CF API: failed to list routes, HTTP error: Get \"http://capi.cf-system.svc.cluster.local/v3/routes?per_page=5000&include=space,domain\": dial tcp 10.233.61.231:80: connect: connection refused"}
+
+$ TOKEN=$(curl "https://auth.docker.io/token?service=registry.docker.io&scope=repository:ratelimitpreview/test:pull" | jq -r .token)
+
+$ curl --head -H "Authorization: Bearer $TOKEN" https://registry-1.docker.io/v2/ratelimitpreview/test/manifests/latest 2>&1 | grep RateLimit
