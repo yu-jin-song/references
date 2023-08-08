@@ -157,3 +157,39 @@ manager 2023-08-04T06:13:48.280Z    ERROR    controller-runtime.controller    Re
 $ TOKEN=$(curl "https://auth.docker.io/token?service=registry.docker.io&scope=repository:ratelimitpreview/test:pull" | jq -r .token)
 
 $ curl --head -H "Authorization: Bearer $TOKEN" https://registry-1.docker.io/v2/ratelimitpreview/test/manifests/latest 2>&1 | grep RateLimit
+
+
+
+
+==================
+
+All that is needed is Linux kernel version 5.9 or newer on both the server and client, then mount with NFS version 4.2 or newer. Support for extended attributes is enabled automatically when both server and client support nfs 4.2.
+I have kernel version 5.15.16 on both my server and client with nfs-utils-2.5.4-r3, and it is working for me:
+
+## NFS Server : /etc/exports
+/  192.168.0.42(rw,subtree_check,no_root_squash)
+
+## NFS Client : /etc/fstab
+192.168.0.42:/  /mnt/slowpc  nfs  noatime,nodiratime,noauto,hard,rsize=1048576,wsize=1048576,timeo=60,retrans=60  0 0
+
+## NFS Client
+# mount | grep /mnt/slowpc
+192.168.0.42:/ on /mnt/slowpc type nfs4 (rw,noatime,nodiratime,vers=4.2,rsize=1048576,wsize=1048576,namlen=255,hard,proto=tcp,timeo=60,retrans=60,sec=sys,local_lock=none)
+# cd /mnt/slowpc/tmp
+# touch file
+# printf bar | attr -s foo file
+Attribute "foo" set to a 3 byte value for file:
+bar
+# attr -l file
+Attribute "foo" has a 3 byte value for file
+
+## NFS Server
+# attr -l /tmp/file
+Attribute "foo" has a 3 byte value for /tmp/file
+
+At https://lwn.net/Articles/799185/ it is mentioned that the new mount option user_xattr is required. However the current nfs utilities do not support that option. Fortunately user_xattr is enabled automatically when possible.
+
+# mount -o user_xattr /mnt/test
+mount.nfs: an incorrect mount option was specified
+# tail -n 1 /var/log/messages
+Jan 30 02:51:08 utl01 kernel: nfs: Unknown parameter 'user_xattr'
