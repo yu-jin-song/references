@@ -193,3 +193,8 @@ At https://lwn.net/Articles/799185/ it is mentioned that the new mount option us
 mount.nfs: an incorrect mount option was specified
 # tail -n 1 /var/log/messages
 Jan 30 02:51:08 utl01 kernel: nfs: Unknown parameter 'user_xattr'
+
+
+
+
+https://jjeongil.tistory.com/2091
